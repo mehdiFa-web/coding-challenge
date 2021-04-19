@@ -133,4 +133,41 @@ class CategoryManagementTest extends TestCase
         $this->assertEquals("Phones",$this->categoryRepository->first()->name);
     }
 
+    /**
+     * @test
+     */
+    public function we_can_get_a_flat_list_of_categories()
+    {
+        $this->postJson(route("categories.store"),[
+            "name" => "smartphones"
+        ]);
+        $id = $this->categoryRepository->first()->id;
+        $this->postJson(route("categories.store"),[
+            "name" => "Mi",
+            "parent_id" => $id
+        ]);
+        $this->postJson(route("categories.store"),[
+            "name" => "Samsung",
+            "parent_id" => $id
+        ]);
+
+        $response = $this->getJson(route("categories.options"));
+        $expectedContent = [
+            [
+                "value" => 10,
+                "label" => "smartphones",
+            ],
+            [
+                "value" => 11,
+                "label" => "Mi",
+            ],
+            [
+                "value" => 12,
+                "label" => "Samsung",
+            ]
+        ];
+
+        $response->assertStatus(200);
+        $this->assertSame($expectedContent,$response->json('data'));
+    }
 }

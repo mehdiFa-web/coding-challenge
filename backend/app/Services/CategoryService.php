@@ -79,4 +79,14 @@ class CategoryService implements ServiceInterface
         $isCreated = $this->categoryRepository->store($data);
         throw_if(!$isCreated,new UnableToCreateCategoryException);
     }
+
+    public function flatList(): array
+    {
+        return $this->categoryRepository->getAll()->map(function($item) {
+            return [
+                "value" => $item->id,
+                "label" => $item->name,
+            ];
+        })->toArray();
+    }
 }

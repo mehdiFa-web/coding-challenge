@@ -32,6 +32,19 @@ class CategoryController extends Controller
         return response()->json($result,$result['status']);
     }
 
+    public function options(): \Illuminate\Http\JsonResponse
+    {
+        $result = [
+            'status' => 200,
+        ];
+        try {
+            $result['data'] = $this->categoryService->flatList();
+        }catch (\Exception $exception) {
+            $result['status'] = 404;
+        }
+        return response()->json($result,$result['status']);
+    }
+
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $validated = $request->validate([
