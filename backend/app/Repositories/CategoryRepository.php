@@ -5,6 +5,9 @@ namespace App\Repositories;
 
 
 use App\Models\Category;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Kalnoy\Nestedset\Collection;
 
 class CategoryRepository
 {
@@ -37,5 +40,23 @@ class CategoryRepository
     public function first()
     {
         return Category::first();
+    }
+
+    /**
+     * @param int $id
+     * @return Model|Collection
+     * @throws ModelNotFoundException
+     */
+    public function find(int $id)
+    {
+        return Category::findOrFail($id);
+    }
+
+    /**
+     * @param int $id
+     */
+    public function delete(int $id)
+    {
+        $this->find($id)->delete();
     }
 }

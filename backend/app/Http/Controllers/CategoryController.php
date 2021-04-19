@@ -52,4 +52,23 @@ class CategoryController extends Controller
         }
         return response()->json($result,$result['status']);
     }
+
+    public function destroy(int $id): \Illuminate\Http\JsonResponse
+    {
+        $result = [
+            "status" => 204,
+            "deleted" => true
+        ];
+
+        try {
+            $this->categoryService->delete($id);
+        }catch (\Exception $exception) {
+            $result = [
+                "status" => 409,
+                "deleted" => false
+            ];
+        }
+
+        return response()->json($result,$result['status']);
+    }
 }

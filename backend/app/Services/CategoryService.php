@@ -65,9 +65,9 @@ class CategoryService implements ServiceInterface
     /**
      * @inheritDoc
      */
-    public function delete(int $id): bool
+    public function delete(int $id)
     {
-        // TODO: Implement delete() method.
+        $this->categoryRepository->delete($id);
     }
 
     /**
