@@ -21,6 +21,28 @@ class ProductController extends Controller
         $this->productService = $productService;
     }
 
+    public function index(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $result = [
+            "status" => 200,
+        ];
+        try {
+            /**
+             * Sorting options :
+             * Low to High
+             * High to Low
+             * Name
+             * */
+            $result["data"] = $this->productService->productsWithCategoryFilter();
+        }catch (\Exception $e) {
+            $result = [
+                "status" => 401,
+                "error" => $e->getMessage()
+            ];
+        }
+        return response()->json($result,$result["status"]);
+    }
+
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $validated = $request->validate([

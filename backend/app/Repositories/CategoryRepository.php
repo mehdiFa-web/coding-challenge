@@ -53,6 +53,20 @@ class CategoryRepository
     }
 
     /**
+     * Return a collection of current category id and also list of descendants ids
+     * @param int $categoryId
+     * @return mixed
+     */
+    public function findWithDescendants(int $categoryId)
+    {
+        $category = $this->find($categoryId);
+        $categories = $category->descendants()->pluck('id');
+        // Include the id of category itself
+        $categories[] = $category->getKey();
+        return $categories;
+    }
+
+    /**
      * @param int $id
      */
     public function delete(int $id)

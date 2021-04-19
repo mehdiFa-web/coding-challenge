@@ -68,4 +68,9 @@ class ProductRepository
         $categories = $this->categoryRepository->find($category_ids);
         $this->savedProduct->categories()->sync($categories);
     }
+
+    public function query()
+    {
+        return Product::query();
+    }
 }

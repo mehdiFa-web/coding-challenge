@@ -22,6 +22,7 @@ Route::post("/categories",[CategoryController::class,"store"])->name("categories
 Route::delete("/categories/{id}",[CategoryController::class,"destroy"])->name("categories.destroy");
 Route::put("/categories/{id}",[CategoryController::class,"update"])->name("categories.update");
 
+Route::get("/products",[ProductController::class,"index"])->name("products.index");
 Route::post('/products',[ProductController::class,"store"])->name("products.store");
 Route::put('/products/{id}',[ProductController::class,"update"])->name("products.update");
 

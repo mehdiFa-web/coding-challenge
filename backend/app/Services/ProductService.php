@@ -4,7 +4,10 @@
 namespace App\Services;
 
 
+use App\QueryFilters\CategoryId;
+use App\QueryFilters\SortBy;
 use App\Repositories\ProductRepository;
+use Illuminate\Pipeline\Pipeline;
 
 class ProductService implements ServiceInterface
 {
@@ -65,5 +68,18 @@ class ProductService implements ServiceInterface
             "image" => $this->fileHandlerService->upload($data["image"],"images")
         ]))->attach($category_ids);
 
+    }
+
+    public function productsWithCategoryFilter()
+    {
+        /**
+         * @var Pipeline $pipeline
+         * */
+        $pipeline = resolve(Pipeline::class);
+        $products = $pipeline->send($this->productRepository->query())->through([
+            SortBy::class ,
+            CategoryId::class
+        ])->thenReturn();
+        return $products->get();
     }
 }
