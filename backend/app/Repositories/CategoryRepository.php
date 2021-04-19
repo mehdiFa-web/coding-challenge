@@ -16,8 +16,26 @@ class CategoryRepository
         return $category->save();
     }
 
+    /**
+     * return all categories
+     * @return Category[]|\Illuminate\Database\Eloquent\Collection
+     */
     public function getAll()
     {
         return Category::all();
+    }
+
+    public function toTree()
+    {
+        return Category::get()->toTree();
+    }
+
+    /**
+     * return first category
+     * @return mixed
+     */
+    public function first()
+    {
+        return Category::first();
     }
 }
