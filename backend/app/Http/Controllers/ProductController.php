@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\ProductService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -50,9 +51,9 @@ class ProductController extends Controller
             "description" => ["required"],
             "price"       =>["required","numeric"],
             "image"       => ["required","image"],
-            "category_ids"=> ["array","nullable"],
-            "category_ids.*" => ["numeric"]
         ]);
+        $validated["category_ids"] = (is_string($request->category_ids) ? json_decode($request->category_ids) : $request->category_ids ) ?? [];
+
         $result = ["status"=>201];
 
         try {
