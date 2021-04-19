@@ -1,27 +1,35 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
+  <Navbar :routes="routes"/>
+  <div class="mx-auto p-4">
+    <main>
+      <router-view></router-view>
+    </main>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import HelloWorld from './components/HelloWorld.vue'
+import Navbar from "./components/Navbar.vue";
+import {RoutesProp} from "./components/types";
 
 export default defineComponent({
   name: 'App',
-  components: {
-    HelloWorld
+  components: {Navbar},
+  data() {
+    return {
+      routes : [
+        {
+          id : '2',
+          name : "Home",
+          path : "/"
+        },
+        {
+          id : '3',
+          name : "Create Product",
+          path : "/products/create"
+        }
+      ] as RoutesProp[]
+    }
   }
 })
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
