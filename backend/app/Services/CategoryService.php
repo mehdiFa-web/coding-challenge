@@ -57,9 +57,9 @@ class CategoryService implements ServiceInterface
     /**
      * @inheritDoc
      */
-    public function update(array $data, int $id): bool
+    public function update(array $data, int $id)
     {
-        // TODO: Implement update() method.
+        $this->categoryRepository->update($id, $data);
     }
 
     /**

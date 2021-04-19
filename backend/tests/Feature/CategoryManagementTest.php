@@ -115,4 +115,22 @@ class CategoryManagementTest extends TestCase
         $this->assertCount(0,$this->categoryRepository->getAll());
     }
 
+    /**
+     * @test
+     * */
+    public function a_category_name_can_be_updated()
+    {
+        $this->postJson(route("categories.store"),[
+            "name" => "smartphones"
+        ]);
+        $id = $this->categoryRepository->first()->id;
+        $response = $this->putJson(route("categories.update",[
+            "id" => $id
+        ]),[
+            "name" => "Phones"
+        ]);
+        $response->assertStatus(201);
+        $this->assertEquals("Phones",$this->categoryRepository->first()->name);
+    }
+
 }

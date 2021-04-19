@@ -59,4 +59,11 @@ class CategoryRepository
     {
         $this->find($id)->delete();
     }
+
+    public function update(int $id, array $data)
+    {
+        $category = $this->find($id);
+        $category->name = $data['name'];
+        $category->save();
+    }
 }

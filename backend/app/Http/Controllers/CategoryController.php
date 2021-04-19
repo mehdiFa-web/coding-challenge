@@ -53,6 +53,28 @@ class CategoryController extends Controller
         return response()->json($result,$result['status']);
     }
 
+    public function update (int $id, Request $request)
+    {
+        $validated = $request->validate([
+            "name" => ["required"],
+        ]);
+
+        $result = [
+            'status' => 201,
+            'saved' => true,
+            'errors' => []
+        ];
+
+        try {
+            $this->categoryService->update($validated, $id);
+        }catch (\Exception $exception) {
+            $result['errors'] = $exception->getMessage();
+            $result['saved']  = false;
+            $result['status'] = 409;
+        }
+        return response()->json($result,$result['status']);
+    }
+
     public function destroy(int $id): \Illuminate\Http\JsonResponse
     {
         $result = [
