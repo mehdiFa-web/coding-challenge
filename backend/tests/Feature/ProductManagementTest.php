@@ -72,4 +72,44 @@ class ProductManagementTest extends TestCase
         $response->assertStatus(201);
         $this->assertTrue($this->productRepository->firstWith('categories')->categories->contains("name",'Samsung'));
     }
+
+    /**
+     * TODO: implementing this later
+     */
+    public function a_product_can_be_updated()
+    {
+        Storage::fake('images');
+        $file = UploadedFile::fake()->image('image.jpg');
+        $file2 = UploadedFile::fake()->image('image2.jpg');
+        $this->postJson(route("categories.store"),[
+            "name" => "Random"
+        ]);
+        $categoryId = $this->categoryRepository->first()->id;
+        $this->postJson(route("products.store"),[
+            "name"        => "Set of two bob hats",
+            "description" => "Beautiful black and white hats of good quality at good price",
+            "price"       => 10.9,
+            "image"       => $file,
+            "category_ids" => [$categoryId]
+        ]);
+        $productId = $this->productRepository->first()->id;
+
+        $newData = [
+            "name"        => "two bob hats",
+            "description" => "Beautiful black and white hats of good quality at good price",
+            "price"       => 10.9,
+            "image"       => $file2,
+            "category_ids" => [$categoryId]
+        ];
+
+        $response = $this->putJson(route("products.update",[
+            "id" => $productId
+        ]),$newData);
+
+        $response->assertStatus(204);
+        Storage::disk('images')->assertExists($file2->hashName());
+        Storage::disk('images')->assertMissing($file->hashName());
+        $this->assertEquals("two bob hats",$this->productRepository->first()->name);
+        $this->assertEquals("Random",$this->productRepository->firstWith("categories")->categories->first()->name);
+    }
 }

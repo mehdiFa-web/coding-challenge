@@ -23,6 +23,7 @@ Route::delete("/categories/{id}",[CategoryController::class,"destroy"])->name("c
 Route::put("/categories/{id}",[CategoryController::class,"update"])->name("categories.update");
 
 Route::post('/products',[ProductController::class,"store"])->name("products.store");
+Route::put('/products/{id}',[ProductController::class,"update"])->name("products.update");
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
