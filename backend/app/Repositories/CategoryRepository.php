@@ -15,4 +15,9 @@ class CategoryRepository
         $category->parent_id = $data['parent_id'] ?? null;
         return $category->save();
     }
+
+    public function getAll()
+    {
+        return Category::all();
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Repositories\CategoryRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -9,6 +10,18 @@ use Tests\TestCase;
 class CategoryManagementTest extends TestCase
 {
     use RefreshDatabase;
+
+    /**
+     * @var CategoryRepository
+     */
+    private $categoryRepository;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->categoryRepository = resolve(CategoryRepository::class);
+    }
+
     /**
      * @test
      * */
@@ -19,6 +32,6 @@ class CategoryManagementTest extends TestCase
            "name" => "smartphones"
         ]);
         $response->assertStatus(201);
-        //$this->assertCount(1,);
+        $this->assertCount(1,$this->categoryRepository->getAll());
     }
 }
