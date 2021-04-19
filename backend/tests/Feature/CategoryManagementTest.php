@@ -34,4 +34,45 @@ class CategoryManagementTest extends TestCase
         $response->assertStatus(201);
         $this->assertCount(1,$this->categoryRepository->getAll());
     }
+    /**
+     * @test
+     * */
+    public function we_can_get_list_of_all_categories_in_a_form_of_tree_structure()
+    {
+        $this->withoutExceptionHandling();
+        $this->postJson(route("categories.store"),[
+            "name" => "smartphones"
+        ]);
+        $id = $this->categoryRepository->first()->id;
+        $this->postJson(route("categories.store"),[
+            "name" => "Mi",
+            "parent_id" => $id
+        ]);
+        $this->postJson(route("categories.store"),[
+            "name" => "Samsung",
+            "parent_id" => $id
+        ]);
+        $response = $this->getJson(route("categories.index"));
+        $response->assertStatus(200);
+        $expectedContent = [
+            [
+                "name" => "smartphones",
+                "id" => 2,
+                "children" => [
+                    [
+                        "name" => "Mi",
+                        "id" => 3,
+                        "children" => []
+                    ],
+                    [
+                        "name" => "Samsung",
+                        "id" => 4,
+                        "children" => []
+                    ]
+                ]
+            ]
+        ];
+        $this->assertSame($expectedContent,$response->json('data'));
+
+    }
 }
