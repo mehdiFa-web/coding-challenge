@@ -43,11 +43,11 @@ class CategoryRepository
     }
 
     /**
-     * @param int $id
+     * @param mixed $id
      * @return Model|Collection
      * @throws ModelNotFoundException
      */
-    public function find(int $id)
+    public function find($id)
     {
         return Category::findOrFail($id);
     }
