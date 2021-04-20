@@ -74,10 +74,11 @@ class ProductManagementTest extends TestCase
     }
 
     /**
-     * TODO: implementing this later
+     * @test
      */
     public function a_product_can_be_updated()
     {
+        $this->withoutExceptionHandling();
         Storage::fake();
         $file = UploadedFile::fake()->image('image.jpg');
         $file2 = UploadedFile::fake()->image('image2.jpg');
@@ -101,14 +102,13 @@ class ProductManagementTest extends TestCase
             "image"       => $file2,
             "category_ids" => [$categoryId]
         ];
-
         $response = $this->putJson(route("products.update",[
             "id" => $productId
         ]),$newData);
 
         $response->assertStatus(204);
-        Storage::disk('images')->assertExists($file2->hashName());
-        Storage::disk('images')->assertMissing($file->hashName());
+        Storage::disk()->assertExists("/images/products/".$file2->hashName());
+        Storage::disk()->assertMissing("/images/products/".$file->hashName());
         $this->assertEquals("two bob hats",$this->productRepository->first()->name);
         $this->assertEquals("Random",$this->productRepository->firstWith("categories")->categories->first()->name);
     }
@@ -131,7 +131,7 @@ class ProductManagementTest extends TestCase
             "id" => $this->productRepository->first()->id
         ]));
         $response->assertStatus(204);
-        Storage::disk('public')->assertMissing($file->hashName());
+        Storage::disk()->assertMissing("/images/products/".$file->hashName());
 
     }
 }

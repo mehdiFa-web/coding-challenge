@@ -4,9 +4,15 @@
 namespace App\Services;
 
 
-use App\QueryFilters\CategoryId;
-use App\QueryFilters\SortBy;
+
+use App\Pipes\QueryFilters\CategoryId;
+use App\Pipes\QueryFilters\SortBy;
+use App\Pipes\UpdateProduct\UpdateDescription;
+use App\Pipes\UpdateProduct\UpdateImage;
+use App\Pipes\UpdateProduct\UpdateName;
+use App\Pipes\UpdateProduct\UpdatePrice;
 use App\Repositories\ProductRepository;
+use Exception;
 use Illuminate\Pipeline\Pipeline;
 
 class ProductService implements ServiceInterface
@@ -37,7 +43,7 @@ class ProductService implements ServiceInterface
      */
     public function get(): array
     {
-        // TODO: Implement get() method.
+        return $this->productsWithCategoryFilter();
     }
 
     /**
@@ -46,6 +52,15 @@ class ProductService implements ServiceInterface
     public function update(array $data, int $id)
     {
         // TODO: Implement update() method.
+    }
+
+    /**
+     * @param int $id
+     * @throws Exception
+     */
+    public function updateProduct(int $id)
+    {
+        $this->productRepository->update($id);
     }
 
     /**

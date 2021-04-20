@@ -41,8 +41,8 @@ class FileHandlerService
         return $hashName;
     }
 
-    public function destroy()
+    public function destroy(string $fileName)
     {
-
+        $this->storage::delete($fileName);
     }
 }

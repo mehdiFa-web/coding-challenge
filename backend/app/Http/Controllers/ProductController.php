@@ -34,7 +34,7 @@ class ProductController extends Controller
              * High to Low
              * Name
              * */
-            $result["data"] = $this->productService->productsWithCategoryFilter();
+            $result["data"] = $this->productService->get();
         }catch (\Exception $e) {
             $result = [
                 "status" => 401,
@@ -70,6 +70,22 @@ class ProductController extends Controller
             ];
         }
 
+        return response()->json($result,$result['status']);
+    }
+
+    public function update(int $id, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $result = [
+          "status" => 204,
+        ];
+        try {
+            $this->productService->updateProduct($id);
+        }catch (\Exception $exception) {
+            $result = [
+                "errors" => $exception->getMessage(),
+                "status" => 409
+            ];
+        }
         return response()->json($result,$result['status']);
     }
 }
