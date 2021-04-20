@@ -53,7 +53,7 @@
           </div>
           <div class="flex flex-wrap">
             <div  v-for="product in state.products" :key="product.id" class="p-4 w-full sm:w-2/4 md:w-1/3">
-              <ProductCard  :src="'http://localhost'+product.imageUrl"
+              <ProductCard  :src="product.imageUrl"
                             :title="product.name"
                             :price="product.price"
               />

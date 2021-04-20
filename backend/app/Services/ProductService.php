@@ -7,10 +7,6 @@ namespace App\Services;
 
 use App\Pipes\QueryFilters\CategoryId;
 use App\Pipes\QueryFilters\SortBy;
-use App\Pipes\UpdateProduct\UpdateDescription;
-use App\Pipes\UpdateProduct\UpdateImage;
-use App\Pipes\UpdateProduct\UpdateName;
-use App\Pipes\UpdateProduct\UpdatePrice;
 use App\Repositories\ProductRepository;
 use Exception;
 use Illuminate\Pipeline\Pipeline;
@@ -41,7 +37,7 @@ class ProductService implements ServiceInterface
     /**
      * @inheritDoc
      */
-    public function get(): array
+    public function get()
     {
         return $this->productsWithCategoryFilter();
     }

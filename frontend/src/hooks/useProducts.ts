@@ -24,7 +24,6 @@ export default function (sortBy:Ref<string>) {
             state.products = res.data.data;
             state.loading = false
         }).catch((err)=>{
-            state.error = err
         })
     }
 

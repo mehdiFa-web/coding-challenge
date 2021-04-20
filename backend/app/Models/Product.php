@@ -41,6 +41,6 @@ class Product extends Model
      */
     public function getImageUrlAttribute(): ?string
     {
-        return $this->image ? "/images/products/".$this->image : null;
+        return $this->image ? asset("/images/products/".$this->image) : null;
     }
 }

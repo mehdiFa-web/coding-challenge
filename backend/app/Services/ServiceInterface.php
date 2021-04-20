@@ -9,7 +9,7 @@ interface ServiceInterface
     /**
      * @return array
      */
-    public function get(): array;
+    public function get();
 
     /**
      * @param array $data
