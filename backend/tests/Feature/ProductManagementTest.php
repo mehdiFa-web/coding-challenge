@@ -114,7 +114,7 @@ class ProductManagementTest extends TestCase
     }
 
     /**
-     * @tes
+     * @test
      * */
     public function a_product_can_be_deleted()
     {
@@ -127,7 +127,7 @@ class ProductManagementTest extends TestCase
             "image"       => $file
         ]);
 
-        $response = $this->postJson(route("products.destroy",[
+        $response = $this->deleteJson(route("products.destroy",[
             "id" => $this->productRepository->first()->id
         ]));
         $response->assertStatus(204);

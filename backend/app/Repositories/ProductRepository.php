@@ -107,4 +107,12 @@ class ProductRepository
         }
     }
 
+    public function destroy(int $id): string
+    {
+        $product = $this->find($id);
+        $hashName = $product->image;
+        $product->delete();
+        return $hashName;
+    }
+
 }

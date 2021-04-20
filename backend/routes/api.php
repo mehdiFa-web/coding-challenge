@@ -25,6 +25,7 @@ Route::put("/categories/{id}",[CategoryController::class,"update"])->name("categ
 Route::get("/products",[ProductController::class,"index"])->name("products.index");
 Route::post('/products',[ProductController::class,"store"])->name("products.store");
 Route::put('/products/{id}',[ProductController::class,"update"])->name("products.update");
+Route::delete("/products/{id}",[ProductController::class,"destroy"])->name("products.destroy");
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

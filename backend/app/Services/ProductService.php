@@ -68,7 +68,8 @@ class ProductService implements ServiceInterface
      */
     public function delete(int $id)
     {
-        // TODO: Implement delete() method.
+        $fileName = $this->productRepository->destroy($id);
+        $this->fileHandlerService->destroy("/images/products/".$fileName);
     }
 
     /**

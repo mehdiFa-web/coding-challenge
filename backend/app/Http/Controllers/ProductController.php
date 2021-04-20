@@ -94,4 +94,20 @@ class ProductController extends Controller
         }
         return response()->json($result,$result['status']);
     }
+
+    public function destroy(int $id): \Illuminate\Http\JsonResponse
+    {
+        $result = [
+            "status" => 204,
+        ];
+        try {
+            $this->productService->delete($id);
+        }catch (\Exception $exception) {
+            $result = [
+                "errors" => $exception->getMessage(),
+                "status" => 409
+            ];
+        }
+        return response()->json($result,$result['status']);
+    }
 }
