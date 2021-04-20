@@ -78,6 +78,12 @@ class ProductController extends Controller
         $result = [
           "status" => 204,
         ];
+        $request->validate([
+            "name"        => ["max:90","nullable"],
+            "description" => ["max:90","nullable"],
+            "price"       =>["numeric","nullable"],
+            "image"       => ["image","nullable"],
+        ]);
         try {
             $this->productService->updateProduct($id);
         }catch (\Exception $exception) {
