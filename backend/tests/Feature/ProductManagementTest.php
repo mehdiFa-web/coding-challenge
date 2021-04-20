@@ -37,7 +37,7 @@ class ProductManagementTest extends TestCase
      */
     public function a_product_can_be_created()
     {
-        Storage::fake('images');
+        Storage::fake();
         $file = UploadedFile::fake()->image('image.jpg');
         $response = $this->postJson(route("products.store"),[
             "name"        => "Set of two bob hats",
@@ -46,7 +46,7 @@ class ProductManagementTest extends TestCase
             "image"       => $file
         ]);
         $response->assertStatus(201);
-        Storage::disk('images')->assertExists($file->hashName());
+        Storage::disk()->assertExists("/images/products/".$file->hashName());
 
         $this->assertEquals("Set of two bob hats",$this->productRepository->first()->name);
     }
@@ -56,7 +56,7 @@ class ProductManagementTest extends TestCase
      */
     public function a_category_can_be_attached_to_a_product()
     {
-        Storage::fake('images');
+        Storage::fake();
         $file = UploadedFile::fake()->image('image.jpg');
         $this->postJson(route("categories.store"),[
             "name" => "Samsung"
@@ -78,7 +78,7 @@ class ProductManagementTest extends TestCase
      */
     public function a_product_can_be_updated()
     {
-        Storage::fake('images');
+        Storage::fake();
         $file = UploadedFile::fake()->image('image.jpg');
         $file2 = UploadedFile::fake()->image('image2.jpg');
         $this->postJson(route("categories.store"),[
@@ -111,5 +111,27 @@ class ProductManagementTest extends TestCase
         Storage::disk('images')->assertMissing($file->hashName());
         $this->assertEquals("two bob hats",$this->productRepository->first()->name);
         $this->assertEquals("Random",$this->productRepository->firstWith("categories")->categories->first()->name);
+    }
+
+    /**
+     * @tes
+     * */
+    public function a_product_can_be_deleted()
+    {
+        Storage::fake();
+        $file = UploadedFile::fake()->image('image.jpg');
+        $this->postJson(route("products.store"),[
+            "name"        => "Set of two bob hats",
+            "description" => "Beautiful black and white hats of good quality at good price",
+            "price"       => 10.9,
+            "image"       => $file
+        ]);
+
+        $response = $this->postJson(route("products.destroy",[
+            "id" => $this->productRepository->first()->id
+        ]));
+        $response->assertStatus(204);
+        Storage::disk('public')->assertMissing($file->hashName());
+
     }
 }
