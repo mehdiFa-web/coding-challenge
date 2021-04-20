@@ -11,10 +11,36 @@ class Product extends Model
     use HasFactory;
 
     /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'image'
+    ];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['imageUrl'];
+
+    /**
      * @return BelongsToMany
      */
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class,'category_product');
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->image ? "/images/products/".$this->image : null;
     }
 }

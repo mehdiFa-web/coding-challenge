@@ -65,7 +65,7 @@ class ProductService implements ServiceInterface
         $category_ids = $data['category_ids'] ?? [];
         unset($data['category_ids']);
         $this->productRepository->store(array_merge($data,[
-            "image" => $this->fileHandlerService->upload($data["image"],"images")
+            "image" => $this->fileHandlerService->upload($data["image"],"/images/products")
         ]))->attach($category_ids);
 
     }

@@ -2,7 +2,7 @@
 
 namespace App\QueryFilters;
 
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 
 class SortBy
 {

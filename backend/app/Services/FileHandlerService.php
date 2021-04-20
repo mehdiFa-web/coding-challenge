@@ -25,17 +25,17 @@ class FileHandlerService
         $this->storage = $storage;
     }
 
+
     /**
-     * this method uploads a file and returns the hashName
      * @param UploadedFile $file
-     * @param string $disk
+     * @param string $path
      * @return string
      * @throws UnableToSaveFile
      */
-    public function upload(UploadedFile $file, string $disk = "public"): string
+    public function upload(UploadedFile $file, string $path): string
     {
         $hashName = $file->hashName();
-        if( ! $file->storeAs("/",$hashName,$disk) ) {
+        if( ! $file->store($path) ) {
             throw new UnableToSaveFile;
         }
         return $hashName;
