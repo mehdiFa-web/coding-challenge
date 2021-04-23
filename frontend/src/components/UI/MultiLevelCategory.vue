@@ -9,7 +9,7 @@
             <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
           </svg>
         </button>
-        <a class="cursor-pointer" @click.prevent="changeCategory(node.id)">
+        <a class="cursor-pointer" @click.prevent="$emit('change-category-id',node.id)">
           {{node.name}}
         </a>
       </div>
@@ -22,38 +22,26 @@
     </li>
 </template>
 
-<script lang="ts">
-import {defineComponent,PropType} from "vue";
-import {changeCategory} from "../../hooks/useProducts";
+<script>
 
-interface CategoryNodeInterface {
-  name : string;
-  id : number;
-  children : Array<CategoryNodeInterface>;
-}
 
-export default defineComponent({
+export default {
   name: "MultiLevelCategory",
   props : {
     node:  {
-       type: Object as PropType<CategoryNodeInterface>
+      type: Object
     }
   },
+  emits : ['change-category-id'],
   data () {
     return {
       expanded : false
     }
   },
   computed : {
-    hasChildren():boolean {
-      return !!this.node?.children.length;
+    hasChildren() {
+      return !!this.node.children.length;
     }
   },
-  setup() {
-
-    return {
-      changeCategory
-    }
-  }
-})
+}
 </script>

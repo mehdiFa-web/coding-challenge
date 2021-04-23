@@ -58,7 +58,7 @@
         <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
         <router-link v-for="route in routes" :key="route.id" :to="route.path"
                      class="block px-3 py-2 rounded-md text-base font-medium"
-                     :class="activeCLasses(route.path,Screen.mobile)"
+                     :class="activeCLasses(route.path,'mobile')"
         >
           {{route.name}}
         </router-link>
@@ -67,30 +67,22 @@
   </nav>
 
 </template>
-<script lang="ts">
-import { defineComponent,PropType } from 'vue'
-import { RoutesProp } from "./types";
-
-enum Screen {
-  mobile = "mobile",
-  desktop = "desktop"
-}
-
-export default defineComponent({
+<script>
+export default {
   props : {
     routes : {
-      type : Object as PropType<RoutesProp[]>,
+      type : Object,
       default : []
     }
   },
   methods : {
-    activeCLasses(path: string,screen: Screen = Screen.desktop): String {
+    activeCLasses(path, screen = 'desktop') {
       const classesWrapper = {
-        [Screen.mobile]: {
+        'mobile': {
           'active' : 'bg-gray-900 text-white',
           'not-active': 'text-gray-300 hover:bg-gray-700 hover:text-white'
         },
-        [Screen.desktop] : {
+        'desktop' : {
           'active' : 'bg-gray-900 text-white',
           'not-active': 'text-gray-300 hover:bg-gray-700 hover:text-white'
         }
@@ -98,11 +90,6 @@ export default defineComponent({
       const currentObject = classesWrapper[screen]
       return this.$route.path === path ? currentObject["active"] : currentObject["not-active"]
     }
-  },
-  setup() {
-    return {
-      Screen
-    }
   }
-})
+}
 </script>

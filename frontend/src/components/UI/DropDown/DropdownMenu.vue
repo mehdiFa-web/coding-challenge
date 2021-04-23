@@ -3,15 +3,13 @@
         <slot></slot>
     </ul>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-    props : {
-        isDropdownActive : {
-            type : Boolean,
-            required : true
-        }
+<script>
+export default {
+  props : {
+    isDropdownActive : {
+      type : Boolean,
+      required : true
     }
-})
+  }
+}
 </script>

@@ -1,19 +1,15 @@
 <template>
   <Navbar :routes="routes"/>
-  <div class="mx-auto p-4">
-    <main>
-      <router-view></router-view>
-    </main>
-  </div>
+  <router-view/>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-import Navbar from "./components/Navbar.vue";
-import {RoutesProp} from "./components/types";
+<style>
 
-export default defineComponent({
-  name: 'App',
+</style>
+<script>
+import Navbar from "./components/Navbar";
+
+export default {
   components: {Navbar},
   data() {
     return {
@@ -28,8 +24,8 @@ export default defineComponent({
           name : "Create Product",
           path : "/products/create"
         }
-      ] as RoutesProp[]
+      ]
     }
   }
-})
+}
 </script>

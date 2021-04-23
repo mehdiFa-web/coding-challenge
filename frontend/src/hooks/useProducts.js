@@ -7,11 +7,11 @@ const state = reactive({
     error : false,
     products : [],
     categories : [],
-    selected : null as number | null
+    selected : null
 });
 
-export default function (sortBy:Ref<string>) {
-    function loadProducts (sortBy: Ref<string>, categoryId : number | null) {
+export default function (sortBy) {
+    function loadProducts (sortBy, categoryId) {
         axios.get(`/api/products`,{
             headers : {
                 accept : "application-json"
@@ -45,6 +45,6 @@ export default function (sortBy:Ref<string>) {
     return state
 }
 
-export function changeCategory(id : number) {
+export function changeCategory(id) {
     state.selected = id;
 }

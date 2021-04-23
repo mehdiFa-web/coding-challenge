@@ -4,7 +4,7 @@
       <h3 class="text-xl font-semibold mb-3">Categories</h3>
       <div class="bg-white">
         <ul class="p-4">
-          <MultiLevelCategory v-for="child in state.categories" :node="child" />
+          <MultiLevelCategory @change-category-id="changeCategory" v-for="child in categories" :node="child" />
         </ul>
       </div>
     </aside>
@@ -22,7 +22,7 @@
                         :class="isDropdownActive && 'bg-gray-300'"
                         @click="isDropdownActive = !isDropdownActive"
                 >
-                  SortBy : {{sortingType}}
+                  SortBy : {{sortLabel}}
                   <svg aria-hidden="true" viewBox="0 0 24 24" class="fill-current hover:text-purple-600" width="18" height="18">
                     <path xmlns="http://www.w3.org/2000/svg" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
                   </svg>
@@ -52,7 +52,7 @@
             </div>
           </div>
           <div class="flex flex-wrap">
-            <div  v-for="product in state.products" :key="product.id" class="p-4 w-full sm:w-2/4 md:w-1/3">
+            <div  v-for="product in products" :key="product.id" class="p-4 w-full sm:w-2/4 md:w-1/3">
               <ProductCard  :src="product.imageUrl"
                             :title="product.name"
                             :price="product.price"
@@ -67,7 +67,7 @@
   <section class="text-center" v-if="loading">
     loading ...
   </section>
-  <div class="bg-white p-4" v-if="noProducts && !loading">
+  <div class="bg-white p-4" v-if="noProducts & !loading">
     <h2 class="text-xl font-semibold">
       No Products Found
     </h2>
@@ -77,17 +77,16 @@
   </div>
 
 </template>
-<script lang="ts">
-import axios from "../axios";
-import { defineComponent, ref } from "vue";
-
+<script>
 import ProductCard from "../components/ProductCard.vue"
 import DropdownMenu from "../components/UI/DropDown/DropdownMenu.vue"
 import DropdownItem from "../components/UI/DropDown/DropdownItem.vue"
-import MultiLevelCategory from "../components/UI/MultiLevelCategory.vue";
-import useProducts from "../hooks/useProducts";
+import MultiLevelCategory from "../components/UI/MultiLevelCategory.vue"
+// Services
+import ProductService from "../services/ProductService"
+import CategoryService from "../services/CategoryService"
 
-export default defineComponent({
+export default {
   name : "Home",
   data() {
     return {
@@ -95,51 +94,13 @@ export default defineComponent({
     }
   },
   methods : {
-    dropdownClickAway ():void {
+    dropdownClickAway () {
       this.isDropdownActive = false
     },
-    changeSortingType (type:string) {
-      this.sortBy = type;
+    changeSortingType (type) {
+      this.changeSortingTypeAction(type)
       this.isDropdownActive = false
     },
-  },
-  computed : {
-    fullyLoaded (): boolean {
-      return this.state.products.length !== 0 &&  !this.state.loading
-    },
-    loading (): boolean {
-      return this.state.loading
-    },
-    noProducts ():boolean {
-      return this.state.products.length === 0
-    },
-    sortingType () :string {
-      interface sortingValueInterface {
-        htl : string;
-        lth : string;
-        name : string;
-      }
-      const sortingValue : sortingValueInterface = {
-        htl : "High to low",
-        lth : "Low to high",
-        name : "name"
-      }
-      // @ts-ignore
-      return sortingValue[this.sortBy];
-    }
-  },
-  setup() {
-    const sortBy = ref("lth")
-    const state = useProducts(sortBy)
-
-    axios.get("/api/categories").then((res)=>{
-      state.categories = res.data.data
-    }).catch((err)=>{
-    })
-    return {
-      state,
-      sortBy
-    }
   },
   components: {
     ProductCard,
@@ -147,7 +108,25 @@ export default defineComponent({
     DropdownMenu,
     MultiLevelCategory
   },
-})
+  setup() {
+    // mapping services instances
+    const productService = new ProductService("lth")
+    const categoryService = new CategoryService()
+
+    return {
+      // computed props
+      products : productService.getProducts(),
+      categories : categoryService.getCategories(),
+      noProducts : productService.noProducts,
+      loading : productService.isLoading,
+      fullyLoaded : productService.fullyLoaded,
+      sortLabel : productService.sortLabel,
+      // actions
+      changeSortingTypeAction : productService.actions().changeSortingType,
+      changeCategory : productService.actions().changeCategory
+    }
+  }
+}
 
 </script>
 <style scoped>

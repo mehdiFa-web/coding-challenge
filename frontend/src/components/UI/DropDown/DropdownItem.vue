@@ -8,10 +8,8 @@
             >{{title}}</a>
     </li>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
+<script>
+export default {
     props : {
         title : {
             type: String,
@@ -32,5 +30,5 @@ export default defineComponent({
             this.$refs[this.$props.id].focus();
         }
     }
-})
+}
 </script>
