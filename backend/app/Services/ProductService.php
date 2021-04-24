@@ -5,11 +5,14 @@ namespace App\Services;
 
 
 
+use App\Dto\ProductData;
+use App\Dto\ProductFilteringData;
 use App\Pipes\QueryFilters\CategoryId;
 use App\Pipes\QueryFilters\SortBy;
 use App\Repositories\ProductRepository;
 use Exception;
 use Illuminate\Pipeline\Pipeline;
+use Spatie\DataTransferObject\Exceptions\UnknownProperties;
 
 class ProductService implements ServiceInterface
 {
@@ -39,33 +42,35 @@ class ProductService implements ServiceInterface
      */
     public function get()
     {
-        return $this->productsWithCategoryFilter();
+        //
     }
 
     /**
      * @inheritDoc
+     * @throws Exception
      */
     public function update(array $data, int $id)
     {
-        // TODO: Implement update() method.
-    }
-
-    /**
-     * @param int $id
-     * @throws Exception
-     */
-    public function updateProduct(int $id)
-    {
-        $this->productRepository->update($id);
+        $this->productRepository->update(new ProductData([
+            "requestDTO" => collect($data),
+            'product' => $this->productRepository->find($id)
+        ]));
     }
 
     /**
      * @inheritDoc
+     * @throws Exception
      */
     public function delete(int $id)
     {
-        $fileName = $this->productRepository->destroy($id);
-        $this->fileHandlerService->destroy("/images/products/".$fileName);
+        $this->productRepository->findThenRegister($id);
+        $imageName = $this->productRepository->getInfoBeforeDelete()['image'];
+
+        if( ! $this->productRepository->destroy($id) ) {
+            throw new Exception("Something goes wrong. you can't delete product");
+        }
+
+        $this->fileHandlerService->destroy("/images/products/".$imageName);
     }
 
     /**
@@ -79,19 +84,16 @@ class ProductService implements ServiceInterface
         $this->productRepository->store(array_merge($data,[
             "image" => $this->fileHandlerService->upload($data["image"],"/images/products")
         ]))->attach($category_ids);
-
     }
 
-    public function productsWithCategoryFilter()
+    /**
+     * @throws UnknownProperties
+     */
+    public function getWithSorting(array $arrayOfQueries)
     {
-        /**
-         * @var Pipeline $pipeline
-         * */
-        $pipeline = resolve(Pipeline::class);
-        $products = $pipeline->send($this->productRepository->query())->through([
-            SortBy::class ,
-            CategoryId::class
-        ])->thenReturn();
-        return $products->get();
+        return $this->productRepository->getProductsWithFilters((new ProductFilteringData([
+            'productQuery' => $this->productRepository->query(),
+            'queries' => collect($arrayOfQueries)
+        ])));
     }
 }

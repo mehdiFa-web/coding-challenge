@@ -4,8 +4,11 @@
 namespace App\Repositories;
 
 
-use App\Models\Category;
+use App\Dto\ProductData;
+use App\Dto\ProductFilteringData;
 use App\Models\Product;
+use App\Pipes\QueryFilters\CategoryId;
+use App\Pipes\QueryFilters\SortBy;
 use App\Pipes\UpdateProduct\UpdateDescription;
 use App\Pipes\UpdateProduct\UpdateImage;
 use App\Pipes\UpdateProduct\UpdateName;
@@ -27,6 +30,10 @@ class ProductRepository
      * @var CategoryRepository
      */
     private $categoryRepository;
+    /**
+     * @var Collection
+     */
+    private $registeredModels;
 
     /**
      * ProductRepository constructor.
@@ -35,6 +42,24 @@ class ProductRepository
     public function __construct(CategoryRepository $categoryRepository)
     {
         $this->categoryRepository = $categoryRepository;
+        $this->registeredModels = collect([]);
+    }
+
+    public function getProductsWithFilters(ProductFilteringData $productDataParam)
+    {
+        /**
+         * @var Pipeline $pipeline
+         * */
+        $pipeline = resolve(Pipeline::class);
+        /**
+         * @var ProductFilteringData $productData
+         * */
+        $productData = $pipeline->send($productDataParam)
+            ->through([
+                SortBy::class ,
+                CategoryId::class
+            ])->thenReturn();
+        return $productData->productQuery->get();
     }
 
     /**
@@ -92,27 +117,55 @@ class ProductRepository
         return Product::findOrFail($id);
     }
 
-    public function update(int $id)
+    public function update(ProductData $productData)
     {
         /** @var Pipeline $pipeline **/
         $pipeline = resolve(Pipeline::class);
-        $updatedProduct = $pipeline->send($this->find($id))->through([
+        /** @var ProductData $updatedProduct **/
+        $updatedProduct = $pipeline->send($productData)->through([
             UpdateImage::class,
             UpdateDescription::class,
             UpdatePrice::class,
             UpdateName::class,
         ])->thenReturn();
-        if( ! $updatedProduct->save()) {
+        if( ! $updatedProduct->product->save()) {
             throw new \Exception("Product is not updated");
         }
     }
 
-    public function destroy(int $id): string
+    public function destroy(int $id = null): bool
     {
+        if( ! $id && $this->registeredModels->count()) {
+            /**
+             * @var Product $product
+             * */
+            $product = $this->registeredModels->first();
+            $this->unregisterModels();
+            return $product->delete();
+        }
+
         $product = $this->find($id);
-        $hashName = $product->image;
-        $product->delete();
-        return $hashName;
+        return $product->delete();
+    }
+
+    public function findThenRegister(int $id)
+    {
+        $this->registeredModels->push($this->find($id));
+    }
+
+    public function getInfoBeforeDelete() : array
+    {
+        $productInfo = $this->registeredModels->map(function (Product $product){
+            return [
+              "image" => $product->image
+            ];
+        });
+        return $productInfo[0];
+    }
+
+    private function unregisterModels()
+    {
+        $this->registeredModels = collect([]);
     }
 
 }

@@ -26,7 +26,6 @@ class CategoryManagementTest extends TestCase
      * */
     public function a_category_can_be_created()
     {
-        $this->withoutExceptionHandling();
         $response = $this->postJson(route("categories.store"),[
            "name" => "smartphones"
         ]);

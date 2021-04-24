@@ -78,7 +78,6 @@ class ProductManagementTest extends TestCase
      */
     public function a_product_can_be_updated()
     {
-        $this->withoutExceptionHandling();
         Storage::fake();
         $file = UploadedFile::fake()->image('image.jpg');
         $file2 = UploadedFile::fake()->image('image2.jpg');
@@ -118,6 +117,7 @@ class ProductManagementTest extends TestCase
      * */
     public function a_product_can_be_deleted()
     {
+        $this->withoutExceptionHandling();
         Storage::fake();
         $file = UploadedFile::fake()->image('image.jpg');
         $this->postJson(route("products.store"),[

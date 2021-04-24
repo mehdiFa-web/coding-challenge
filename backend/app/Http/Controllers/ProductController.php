@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Dto\ProductData;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -27,6 +28,8 @@ class ProductController extends Controller
         $result = [
             "status" => 200,
         ];
+
+        $arrayOfQueries = $request->only(['sortBy','category_id']);
         try {
             /**
              * Sorting options :
@@ -34,7 +37,7 @@ class ProductController extends Controller
              * High to Low
              * Name
              * */
-            $result["data"] = $this->productService->get();
+            $result["data"] = $this->productService->getWithSorting($arrayOfQueries);
         }catch (\Exception $e) {
             $result = [
                 "status" => 401,
@@ -52,7 +55,10 @@ class ProductController extends Controller
             "price"       =>["required","numeric"],
             "image"       => ["required","image"],
         ]);
-        $validated["category_ids"] = (is_string($request->category_ids) ? json_decode($request->category_ids) : $request->category_ids ) ?? [];
+        $validated["category_ids"] = $request->category_ids ?? [];
+        if( is_string($request->category_ids)) {
+            $validated['category_ids'] = json_decode($request->category_ids);
+        }
 
         $result = ["status"=>201];
 
@@ -78,14 +84,14 @@ class ProductController extends Controller
         $result = [
           "status" => 204,
         ];
-        $request->validate([
+        $validated = $request->validate([
             "name"        => ["max:90","nullable"],
             "description" => ["max:90","nullable"],
             "price"       =>["numeric","nullable"],
             "image"       => ["image","nullable"],
         ]);
         try {
-            $this->productService->updateProduct($id);
+            $this->productService->update($validated, $id);
         }catch (\Exception $exception) {
             $result = [
                 "errors" => $exception->getMessage(),
