@@ -4,9 +4,9 @@
 namespace App\Pipes\UpdateProduct;
 
 
+use App\Dto\ProductData;
 use App\Exceptions\UnableToSaveFile;
 use App\Services\FileHandlerService;
-use Illuminate\Database\Eloquent\Model;
 
 class UpdateImage
 {
@@ -27,16 +27,16 @@ class UpdateImage
     /**
      * @throws UnableToSaveFile
      */
-    public function handle(Model $product, \Closure $next)
+    public function handle(ProductData $productData, \Closure $next)
     {
-        if( ! request()->has('image') ) {
-            return $next($product);
+        if( ! $productData->requestDTO->has("image") ) {
+            return $next($productData);
         }
 
         // delete old file
-        $this->fileHandlerService->destroy("/images/products/".$product->image);
+        $this->fileHandlerService->destroy("/images/products/".$productData->product->image);
         // upload new file
-        $product->image =$this->fileHandlerService->upload(request()->file("image"),"/images/products");
-        return $next($product);
+        $productData->product->image = $this->fileHandlerService->upload($productData->requestDTO->get("image"),"/images/products");
+        return $next($productData);
     }
 }

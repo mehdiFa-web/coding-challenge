@@ -2,6 +2,7 @@
 
 namespace App\Pipes\QueryFilters;
 
+use App\Dto\ProductFilteringData;
 use App\Repositories\CategoryRepository;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -17,16 +18,17 @@ class CategoryId
         $this->categoryRepository = $categoryRepository;
     }
 
-    public function handle(Builder $builder,\Closure $next)
+    public function handle(ProductFilteringData $filteringData,\Closure $next)
     {
-        if( ! \request()->has('category_id') ) {
-            return $next($builder);
+        if( !$filteringData->queries->has('category_id') ) {
+            return $next($filteringData);
         }
-        $categories = $this->categoryRepository->findWithDescendants(\request()->input('category_id'));
-        return $next(
-            $builder->whereHas('categories', function (Builder $query) use ($categories) {
-                $query->whereIn('category_id', $categories);
-            })
-        );
+        $categories = $this->categoryRepository->findWithDescendants($filteringData->queries->get('category_id'));
+
+        $filteringData->productQuery->whereHas('categories', function (Builder $query) use ($categories) {
+            $query->whereIn('category_id', $categories);
+        });
+
+        return $next($filteringData);
     }
 }

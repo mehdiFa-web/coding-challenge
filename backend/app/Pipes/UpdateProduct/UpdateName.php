@@ -1,20 +1,18 @@
 <?php
 
-
 namespace App\Pipes\UpdateProduct;
 
-
-use Illuminate\Database\Eloquent\Model;
+use App\Dto\ProductData;
 
 class UpdateName
 {
-    public function handle(Model $product, \Closure $next)
+    public function handle(ProductData $productData, \Closure $next)
     {
-        if( ! request()->has('name') ) {
-            return $next($product);
+        if( ! $productData->requestDTO->has('name') ) {
+            return $next($productData);
         }
 
-        $product->name = request()->get('name');
-        return $next($product);
+        $productData->product->name = $productData->requestDTO->get('name');
+        return $next($productData);
     }
 }

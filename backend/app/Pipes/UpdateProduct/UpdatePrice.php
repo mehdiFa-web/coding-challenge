@@ -4,17 +4,17 @@
 namespace App\Pipes\UpdateProduct;
 
 
-use Illuminate\Database\Eloquent\Model;
+use App\Dto\ProductData;
 
 class UpdatePrice
 {
-    public function handle(Model $product, \Closure $next)
+    public function handle(ProductData $productData, \Closure $next)
     {
-        if( ! request()->has('price') ) {
-            return $next($product);
+        if( ! $productData->requestDTO->has('price') ) {
+            return $next($productData);
         }
 
-        $product->name = request()->get('price');
-        return $next($product);
+        $productData->product->price = $productData->requestDTO->get('price');
+        return $next($productData);
     }
 }

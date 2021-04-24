@@ -4,17 +4,18 @@
 namespace App\Pipes\UpdateProduct;
 
 
+use App\Dto\ProductData;
 use Illuminate\Database\Eloquent\Model;
 
 class UpdateDescription
 {
-    public function handle(Model $product, \Closure $next)
+    public function handle(ProductData $productData, \Closure $next)
     {
-        if( ! request()->has('description') ) {
-            return $next($product);
+        if( ! $productData->requestDTO->has('description') ) {
+            return $next($productData);
         }
 
-        $product->name = request()->get('description');
-        return $next($product);
+        $productData->product->description = $productData->requestDTO->get('description');
+        return $next($productData);
     }
 }

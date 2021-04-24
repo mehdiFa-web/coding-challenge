@@ -2,23 +2,27 @@
 
 namespace App\Pipes\QueryFilters;
 
-use Illuminate\Database\Eloquent\Builder;
+
+use App\Dto\ProductFilteringData;
 
 class SortBy
 {
-    public function handle(Builder $builder,\Closure $next)
+    public function handle(ProductFilteringData $filteringData,\Closure $next)
     {
-        if( ! \request()->has('sortBy') ) {
-            return $next($builder);
+        if( ! $filteringData->queries->has('sortBy') ) {
+            return $next($filteringData);
         }
         $sortingOptions = [
             "lth" => "asc",
             "htl" => "desc" ,
             "name" => "asc"
         ];
-        if( \request()->input("sortBy") !== "name") {
-            return $next($builder->orderBy('price',$sortingOptions[\request()->input('sortBy')] ?? "asc"));
+        if( $filteringData->queries->get("sortBy") !== "name") {
+            $filteringData->productQuery->orderBy('price',$sortingOptions[$filteringData->queries->get('sortBy')] ?? "asc");
+            return $next($filteringData);
         }
-        return $next($builder->orderBy('name'));
+
+        $filteringData->productQuery->orderBy('name');
+        return $next($filteringData);
     }
 }
