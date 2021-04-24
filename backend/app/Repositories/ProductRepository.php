@@ -117,7 +117,7 @@ class ProductRepository
         return Product::findOrFail($id);
     }
 
-    public function update(ProductData $productData)
+    public function update(ProductData $productData): bool
     {
         /** @var Pipeline $pipeline **/
         $pipeline = resolve(Pipeline::class);
@@ -131,6 +131,7 @@ class ProductRepository
         if( ! $updatedProduct->product->save()) {
             throw new \Exception("Product is not updated");
         }
+        return true;
     }
 
     public function destroy(int $id = null): bool

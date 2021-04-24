@@ -91,7 +91,7 @@ class ProductController extends Controller
             "image"       => ["image","nullable"],
         ]);
         try {
-            $this->productService->update($validated, $id);
+            $result['isUpdated'] = $this->productService->update($validated, $id);
         }catch (\Exception $exception) {
             $result = [
                 "errors" => $exception->getMessage(),
@@ -107,7 +107,7 @@ class ProductController extends Controller
             "status" => 204,
         ];
         try {
-            $this->productService->delete($id);
+            $result['isDeleted'] = $this->productService->delete($id);
         }catch (\Exception $exception) {
             $result = [
                 "errors" => $exception->getMessage(),

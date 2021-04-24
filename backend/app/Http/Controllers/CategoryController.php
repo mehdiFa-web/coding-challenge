@@ -79,7 +79,7 @@ class CategoryController extends Controller
         ];
 
         try {
-            $this->categoryService->update($validated, $id);
+            $result['isUpdated'] = $this->categoryService->update($validated, $id);
         }catch (\Exception $exception) {
             $result['errors'] = $exception->getMessage();
             $result['saved']  = false;
@@ -96,7 +96,7 @@ class CategoryController extends Controller
         ];
 
         try {
-            $this->categoryService->delete($id);
+            $result['isDeleted'] = $this->categoryService->delete($id);
         }catch (\Exception $exception) {
             $result = [
                 "status" => 409,

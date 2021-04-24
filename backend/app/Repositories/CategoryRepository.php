@@ -69,15 +69,15 @@ class CategoryRepository
     /**
      * @param int $id
      */
-    public function delete(int $id)
+    public function delete(int $id): bool
     {
-        $this->find($id)->delete();
+        return $this->find($id)->delete();
     }
 
-    public function update(int $id, array $data)
+    public function update(int $id, array $data): bool
     {
         $category = $this->find($id);
         $category->name = $data['name'];
-        $category->save();
+        return $category->save();
     }
 }

@@ -49,9 +49,9 @@ class ProductService implements ServiceInterface
      * @inheritDoc
      * @throws Exception
      */
-    public function update(array $data, int $id)
+    public function update(array $data, int $id): bool
     {
-        $this->productRepository->update(new ProductData([
+        return $this->productRepository->update(new ProductData([
             "requestDTO" => collect($data),
             'product' => $this->productRepository->find($id)
         ]));
@@ -61,7 +61,7 @@ class ProductService implements ServiceInterface
      * @inheritDoc
      * @throws Exception
      */
-    public function delete(int $id)
+    public function delete(int $id): bool
     {
         $this->productRepository->findThenRegister($id);
         $imageName = $this->productRepository->getInfoBeforeDelete()['image'];
@@ -71,6 +71,7 @@ class ProductService implements ServiceInterface
         }
 
         $this->fileHandlerService->destroy("/images/products/".$imageName);
+        return true;
     }
 
     /**

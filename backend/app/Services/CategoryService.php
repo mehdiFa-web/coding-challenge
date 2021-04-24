@@ -57,17 +57,17 @@ class CategoryService implements ServiceInterface
     /**
      * @inheritDoc
      */
-    public function update(array $data, int $id)
+    public function update(array $data, int $id): bool
     {
-        $this->categoryRepository->update($id, $data);
+        return $this->categoryRepository->update($id, $data);
     }
 
     /**
      * @inheritDoc
      */
-    public function delete(int $id)
+    public function delete(int $id): bool
     {
-        $this->categoryRepository->delete($id);
+        return $this->categoryRepository->delete($id);
     }
 
     /**
