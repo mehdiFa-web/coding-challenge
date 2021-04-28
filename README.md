@@ -18,6 +18,8 @@ this project is built with [laravel](https://laravel.com/docs/8.x) and [vue 3](h
 `php artisan key:generate`
 #### Migrate the database
 `php artisan migrate`
+#### Storage link
+`php artisan storage:link`
 
 ### How to set up the front-end :
 #### Open the terminal then type the following commands
