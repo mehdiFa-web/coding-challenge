@@ -25,33 +25,11 @@ class CategoryService implements ServiceInterface
     }
 
     /**
-     * recursive algorithm to build tree of categories each root category has children
-     * @param $categories
-     * @return array
-     */
-    private function traverse($categories): array
-    {
-        $result = [];
-        $generate = function ($categories,&$result) use (&$generate) {
-            foreach ($categories as $category) {
-                $arr["name"] = $category->name;
-                $arr["id"] = $category->id;
-                $arr["children"] = [];
-                $reference = &$arr["children"];
-                $generate($category->children,$reference);
-                array_push($result,$arr);
-            }
-        };
-        $generate($categories,$result);
-        return $result;
-    }
-
-    /**
      * @inheritDoc
      */
     public function get(): array
     {
-        return $this->traverse($this->categoryRepository->toTree());
+        return $this->categoryRepository->toTree()->ToArray();
     }
 
     /**

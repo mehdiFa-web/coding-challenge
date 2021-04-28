@@ -16,6 +16,13 @@ class Category extends Model
         "parent_id"
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        '_lft',
+        '_rgt'
+    ];
+    
     /**
      * @return BelongsToMany
      */
