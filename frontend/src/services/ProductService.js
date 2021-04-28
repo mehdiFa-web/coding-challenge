@@ -1,80 +1,34 @@
-import {computed, reactive, ref, watch} from "vue";
-import axios from "../axios";
+import apiClient from "../axios";
+import { forEach } from "@/helpers";
 
-
-
-
-class ProductService {
-    constructor(sortBy) {
-        this.state = reactive({
-            loading : true,
-            error : false,
-            products : [],
-            selected : null
-        })
-
-        this.sortBy = ref(sortBy)
-        this.initWatchers()
-        this.initComputedProps()
-    }
-    loadProducts(sortBy, categoryId) {
-        axios.get(`/api/products`,{
+export default {
+    getProducts : function (sortBy, categoryId) {
+        return apiClient.get("/api/products",{
             headers : {
                 accept : "application-json"
             },
             params : {
-                "sortBy":sortBy.value,
+                "sortBy":sortBy,
                 "category_id" : categoryId
             }
-        }).then((res)=> {
-            this.state.products = res.data.data;
-            this.state.loading = false
-        }).catch((err)=>{
-        })
-    }
-    setSortingType (sortBy) {
-        this.sortBy.value = sortBy
-    }
-    actions () {
-        return {
-            changeSortingType : (sortBy) => this.setSortingType(sortBy),
-            changeCategory : (id) => this.changeCategory(id)
-        }
-    }
-    initWatchers() {
-        watch( this.sortBy, () => {
-            // loading data here
-            this.loadProducts(this.sortBy,this.state.selected);
-        },{
-            immediate : true,
-        })
-
-        watch(() => this.state.selected,()=>{
-            // loading data here
-            this.loadProducts(this.sortBy,this.state.selected);
-        })
-    }
-    initComputedProps() {
-        this.noProducts = computed(() => this.state.products.length === 0)
-        this.isLoading = computed(() => this.state.loading)
-        this.fullyLoaded = computed(() => !this.noProducts.value && !this.isLoading.value)
-        this.products = computed(() => this.state.products)
-        this.sortLabel = computed(()=>{
-            const sortingValue = {
-                htl : "High to low",
-                lth : "Low to high",
-                name : "name"
+        });
+    },
+    getCategoriesForInput : function () {
+        return apiClient.get("/api/category/options")
+    },
+    createNewProduct : async function (newProduct) {
+        const formData = await this.prepareFormData(newProduct)
+        return apiClient.post('/api/products', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
             }
-            return sortingValue[this.sortBy.value]
         })
-    }
-    changeCategory(id) {
-        this.state.selected = id
-    }
-    getProducts() {
-        return this.products;
+    },
+    prepareFormData : function (object) {
+        let formData = new FormData();
+        forEach(object,(key,value)=> {
+            formData.append(key,value instanceof Array ? JSON.stringify(value): value)
+        });
+        return Promise.resolve(formData)
     }
 }
-
-
-export default ProductService

@@ -1,11 +1,4 @@
-import {computed, reactive, watch} from "vue";
-import axios from "../axios";
-import {forEach} from "../helpers";
-import router from "../router";
-
-
-
-
+/**
 class FormService {
     constructor() {
         this.state = reactive({
@@ -75,3 +68,4 @@ class FormService {
 
 
 export default FormService
+ */
