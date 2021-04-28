@@ -6,14 +6,15 @@ import {
     SET_LOADING,
     CHANGE_SELECTED_CATEGORY_ID,
     PRODUCT_SUBMITTED,
-    SET_SUBMITTED
+    SET_SUBMITTED,
+    SET_FORM_SUBMISSION_ERRORS
 } from "./ProductMutations"
 
 export const namespaced = true
 
 export const state = {
     loading : true,
-    error : false,
+    errors : false,
     products : [],
     selected : null,
     sortBy : 'htl',
@@ -39,6 +40,9 @@ export const mutations =  {
     },
     [SET_SUBMITTED] (state, isSubmitted) {
         state.submitted = isSubmitted
+    },
+    [SET_FORM_SUBMISSION_ERRORS] (state, errors) {
+        state.errors = errors
     }
 }
 export const actions = { 
@@ -48,17 +52,15 @@ export const actions = {
                     commit(SET_PRODUCTS, response.data.data)
                     commit(SET_LOADING, true)
                 }).catch((error) =>{
-                    console.log(error.response)
                 })
     },
     createProduct({commit}, newProduct) {
-        console.log("sub")
         return ProductService.createNewProduct(newProduct)
                             .then(() => {
                                 commit(PRODUCT_SUBMITTED)
-                                console.log("sub done")
+                                commit(SET_FORM_SUBMISSION_ERRORS, false)
                             }).catch((err)=> {
-                                console.log(err.response)
+                                commit(SET_FORM_SUBMISSION_ERRORS, err.response.data.errors)
                             })
     },
     changeSortingType({commit}, sortingType) {

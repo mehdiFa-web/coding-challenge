@@ -8,17 +8,17 @@
         <Label text="Product Name" for="productName" />
         <InputField v-model="product.name" id="productName" placeholder="Blue bag" class="w-full" type="text" />
       </div>
-      <!--
+
       <Alert v-if="errors['name']">
         {{errors["name"][0]}}
-      </Alert>-->
+      </Alert>
       <div class="my-4">
         <Label text="Product Price" for="productPrice" />
         <InputField v-model="product.price" id="productPrice" placeholder="0.99" class="w-full" type="number" step=any min=1 />
-      </div><!--
+      </div>
       <Alert  v-if="errors['price']">
         {{errors["price"][0]}}
-      </Alert>-->
+      </Alert>
       <div class="my-4">
         <Label text="Product Category" />
         <Multiselect v-model="product.category_ids"
@@ -31,17 +31,17 @@
       <div class="my-4">
         <Label text="Product Image" for="productImage" />
         <input @change="setImageAction($event.target.files[0])" class="block" type="file" id="productImage"/>
-      </div><!--
+      </div>
       <Alert v-if="errors['image']">
         {{errors["image"][0]}}
-      </Alert>-->
+      </Alert>
       <div class="my-4">
         <Label text="Product Description" for="productDescription" />
         <TextAreaField v-model="product.description" id="productDescription" placeholder="Description" class="w-full h-44"/>
-      </div><!--
+      </div>
       <Alert v-if="errors['description']">
       {{errors["description"][0]}}
-      </Alert>-->
+      </Alert>
       <Button type="submit" class="my-4">
         Register
       </Button>
@@ -90,7 +90,10 @@ export default {
   },
   computed : {
     ...mapState('category',[
-        'categoriesOptions'
+        'categoriesOptions',
+    ]),
+    ...mapState('product',[
+      'errors'
     ]),
     ...mapGetters('product',[
       'productIsSubmitted'
